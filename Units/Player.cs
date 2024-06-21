@@ -17,11 +17,11 @@ namespace GamePrototype.Units
         {
             if (_equipment.ContainsKey(slot))
             {
-                _equipment[slot] = newItem;
+                _equipment[slot] = (EquipItem)newItem;
             }
             else
             {
-                _equipment.Add(slot, newItem);
+                _equipment.Add(slot, (EquipItem)newItem);
             }
         }
 
@@ -68,7 +68,7 @@ namespace GamePrototype.Units
             {
                 if (_equipment.TryGetValue(EquipSlot.Armour, out var item) && item is Armour armour)
                 {
-                    armour.Repear(grindstone.DurabilityRestore);
+                    armour.Repair(grindstone.DurabilityRestore);
                 }
             }
         }

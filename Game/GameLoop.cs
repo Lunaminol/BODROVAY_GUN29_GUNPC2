@@ -13,20 +13,46 @@ namespace GamePrototype.Game
         
         public void StartGame() 
         {
-            Initialize();
+            Console.WriteLine("Welcome! Please select diffuculty level: 1 - Easy, 2 - Hard");
+                if (Enum.TryParse<SetDifficulty>(Console.ReadLine(), out var difficultyLevel))
+                {
+                    Console.WriteLine($"You selected: {difficultyLevel}");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input, please select 1 - Easy or 2 - Hard.");
+                }
+
+            Initialize(difficultyLevel);
             Console.WriteLine("Entering the dungeon");
             StartGameLoop();
         }
 
         #region Game Loop
 
-        private void Initialize()
+        private void Initialize(SetDifficulty difficultyLevel)
         {
-            Console.WriteLine("Welcome, player!");
-            _dungeon = DungeonBuilder.BuildDungeon();
-            Console.WriteLine("Enter your name");
-            _player = UnitFactoryDemo.CreatePlayer(Console.ReadLine());
-            Console.WriteLine($"Hello {_player.Name}");
+            switch (difficultyLevel)
+            {
+                case SetDifficulty.Easy:
+                    var easyDungeon = new EasyDungeon(new EasyUnit());
+                    _dungeon = easyDungeon.BuildDungeon();
+                    Console.WriteLine("Enter your name");
+                    string name = Console.ReadLine();
+                    _player = easyDungeon.CreatePlayer(name);
+                    Console.WriteLine($"Hello {_player.Name}");
+                    break;
+                case SetDifficulty.Hard:
+                    var hardDungeon = new HardDungeon(new HardUnit());
+                    _dungeon = hardDungeon.BuildDungeon();
+                    Console.WriteLine("Enter your name");
+                    string nameOne = Console.ReadLine();
+                    _player = hardDungeon.CreatePlayer(nameOne);
+                    Console.WriteLine($"Hello {_player.Name}");
+                    break;
+                default:
+                    throw new ArgumentException("Invalid difficulty level specified.");
+            }
         }
 
         private void StartGameLoop()

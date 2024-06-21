@@ -1,31 +1,21 @@
 ﻿using GamePrototype.Dungeon;
 using GamePrototype.Items.EconomicItems;
+using GamePrototype.Units;
 
 namespace GamePrototype.Utils
 {
-    public static class DungeonBuilder
+    public abstract class DungeonBuilder
     {
-        public static DungeonRoom BuildDungeon()
+        protected UnitFactoryDemo _unitFactory;
+        public DungeonBuilder(UnitFactoryDemo unitFactory)
         {
-            var enter = new DungeonRoom("Enter");
-            var monsterRoom = new DungeonRoom("Monster", UnitFactoryDemo.CreateGoblinEnemy());
-            var emptyRoom = new DungeonRoom("Empty");
-            var lootRoom = new DungeonRoom("Loot1", new Gold());
-            var lootStoneRoom = new DungeonRoom("Loot1", new Grindstone("Stone"));
-            var finalRoom = new DungeonRoom("Final", new Grindstone("Stone1"));
-
-            enter.TrySetDirection(Direction.Right, monsterRoom);
-            enter.TrySetDirection(Direction.Left, emptyRoom);
-
-            monsterRoom.TrySetDirection(Direction.Forward, lootRoom);
-            monsterRoom.TrySetDirection(Direction.Left, emptyRoom);
-
-            emptyRoom.TrySetDirection(Direction.Forward, lootStoneRoom);
-
-            lootRoom.TrySetDirection(Direction.Forward, finalRoom);
-            lootStoneRoom.TrySetDirection(Direction.Forward, finalRoom);
-
-            return enter;
+            _unitFactory = unitFactory;
         }
+        public Unit CreatePlayer(string name)
+        {
+            return _unitFactory.CreatePlayer(name);
+        }
+        public abstract DungeonRoom BuildDungeon();
     }
 }
+
