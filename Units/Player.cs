@@ -13,6 +13,18 @@ namespace GamePrototype.Units
         {            
         }
 
+        public void EquipItem(EquipSlot slot, Item newItem)
+        {
+            if (_equipment.ContainsKey(slot))
+            {
+                _equipment[slot] = newItem;
+            }
+            else
+            {
+                _equipment.Add(slot, newItem);
+            }
+        }
+
         public override uint GetUnitDamage()
         {
             if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon) 
@@ -47,9 +59,17 @@ namespace GamePrototype.Units
 
         private void UseEconomicItem(EconomicItem economicItem)
         {
-            if (economicItem is HealthPotion healthPotion) 
+            if (economicItem is HealthPotion healthPotion)
             {
                 Health += healthPotion.HealthRestore;
+            }
+
+            else if (economicItem is Grindstone grindstone)
+            {
+                if (_equipment.TryGetValue(EquipSlot.Armour, out var item) && item is Armour armour)
+                {
+                    armour.Repear(grindstone.DurabilityRestore);
+                }
             }
         }
 
@@ -58,6 +78,7 @@ namespace GamePrototype.Units
             if (_equipment.TryGetValue(EquipSlot.Armour, out var item) && item is Armour armour) 
             {
                 damage -= (uint)(damage * (armour.Defence / 100f));
+                armour.ReduceDurability(1);
             }
             return damage;
         }
